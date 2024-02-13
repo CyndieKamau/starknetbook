@@ -408,3 +408,46 @@ impl<T: pallet_aura::Config> OnTimestampSet<T::Moment> for ConsensusOnTimestampS
 ```
 
 This code snippet configures the `pallet_timestamp` FRAME pallet, which handles timestamp manipulation within the runtime.
+
+
+For configuration parameters you want to tweak to suit your needs, you normally tweak the Starknet pallet.
+
+Some of the parameters to be tweaked include:
+
+- `DisableTransactionFee`: If true, calculate and store the Starknet state commitments
+- `DisableNonceValidation`: If true, check and increment nonce after a transaction
+- `InvokeTxMaxNSteps`: Maximum number of Cairo steps for an invoke transaction
+- `ValidateMaxNSteps`: Maximum number of Cairo steps when validating a transaction
+- `MaxRecursionDepth`: Maximum recursion depth for transactions
+- `ChainId`: The chain id of the app chain
+
+
+## Adding a new pallet
+To add a new pallet to our app chain template, we will use [Nicks pallet](https://paritytech.github.io/substrate/master/pallet_nicks/index.html) as an example.  The Nicks pallet allows blockchain users to pay a deposit to reserve a nickname for an account they control. 
+
+It implements the following functions:
+
+- The `set_name` function to collect a deposit and set the name of an account if the name is not already taken.
+- The `clear_name` function to remove the name associated with an account and return the deposit.
+- The `kill_name` function to forcibly remove an account name without returning the deposit.
+
+## Add the Nicks Pallet Dependencies
+
+Before you can use a new pallet, you must add some information about it to the configuration file that the compiler uses to build the runtime binary.
+
+- Change into the root directory of the template
+- Open the `Cargo.toml` configuration file in a text editor
+- Locate the `[dependencies]` section and note how other pallets are imported.
+- Copy an existing pallet dependency description and replace the pallet name with `pallet-nicks` to make the pallet available to the node template runtime.
+
+The result should be like this:
+
+```toml
+# Substrate Frame pallet
+pallet-aura = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.43" }
+pallet-grandpa = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.43" }
+pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.43" }
+pallet-nicks = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.43" }
+
+```
+
